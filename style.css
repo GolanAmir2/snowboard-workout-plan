@@ -158,6 +158,30 @@ h1 {
 #phaseLabel { color: var(--ice); font-weight: 600; }
 #weekLabel { color: var(--fog); }
 
+.schedule-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  margin: 2px 0 10px;
+  color: var(--fog);
+}
+
+.schedule-line.on-track span { color: var(--moss); font-weight: 600; }
+.schedule-line.behind span { color: var(--alpenglow); font-weight: 600; }
+
+.schedule-jump {
+  background: transparent;
+  border: 1px solid var(--navy-700);
+  border-radius: 999px;
+  color: var(--ice);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  white-space: nowrap;
+}
+
 .track {
   position: relative;
   height: 6px;

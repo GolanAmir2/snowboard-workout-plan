@@ -1,14 +1,19 @@
 const STORAGE_KEY = "summit-prep-state-v1";
+const TRIP_DEFAULT = "2027-02-02";
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw);
   } catch (e) {}
-  const d = new Date();
-  d.setMonth(d.getMonth() + 5);
   return {
-    tripDate: d.toISOString().slice(0, 10),
+    tripDate: TRIP_DEFAULT,
+    startDate: todayStr(),
     currentWeek: 1,
     currentDay: "A",
     checked: {},
@@ -23,6 +28,15 @@ function saveState() {
 }
 
 let state = loadState();
+
+// Backfill for installs that predate the schedule tracker:
+// you started Sep 13 2026, trip Feb 2 2027.
+if (!state.startDate) {
+  state.startDate = "2026-09-13";
+}
+if (!state.tripDate || state.tripDate < "2026-09-13") {
+  state.tripDate = TRIP_DEFAULT;
+}
 
 const el = (id) => document.getElementById(id);
 const CHECK_SVG = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#0F1720" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -256,9 +270,52 @@ function renderPhaseNote() {
   el("phaseNote").textContent = phase.blurb;
 }
 
+function scheduleInfo() {
+  const start = new Date(state.startDate + "T00:00:00");
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const days = Math.max(0, Math.round((now - start) / 86400000));
+  const expectedWeek = Math.min(20, Math.floor(days / 7) + 1);
+  const expectedSessions = Math.min(60, (expectedWeek - 1) * 3);
+  const doneCount = Object.values(state.daysDone || {}).filter(Boolean).length;
+  return { days, expectedWeek, expectedSessions, doneCount, diff: doneCount - expectedSessions };
+}
+
+function renderSchedule() {
+  const s = scheduleInfo();
+  const line = el("scheduleLine");
+  if (!line) return;
+  let status, cls;
+  if (s.diff >= 0) {
+    status = `On track · ${s.doneCount}/60 workouts`;
+    cls = "on-track";
+  } else {
+    const n = -s.diff;
+    status = `${n} workout${n > 1 ? "s" : ""} behind · ${s.doneCount}/60 done`;
+    cls = "behind";
+  }
+  const jump =
+    state.currentWeek !== s.expectedWeek
+      ? ` <button class="schedule-jump" id="scheduleJump">Go to week ${s.expectedWeek}</button>`
+      : "";
+  line.className = "schedule-line " + cls;
+  line.innerHTML = `<span>${status} · should be week ${s.expectedWeek}</span>${jump}`;
+  const j = el("scheduleJump");
+  if (j) {
+    j.onclick = () => {
+      state.currentWeek = s.expectedWeek;
+      state.currentDay = "A";
+      editing = false;
+      saveState();
+      render();
+    };
+  }
+}
+
 function render() {
   updateCountdown();
   updateProgressStrip();
+  renderSchedule();
   renderDayTabs();
   renderWorkout();
   renderPhaseNote();
