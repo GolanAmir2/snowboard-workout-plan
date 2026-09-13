@@ -1,6 +1,6 @@
 const STORAGE_KEY = "summit-prep-state-v1";
 const TRIP_DEFAULT = "2027-02-02";
-const APP_VERSION = "v1.4";
+const APP_VERSION = "v1.5";
 
 function todayStr() {
   const d = new Date();

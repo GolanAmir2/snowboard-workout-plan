@@ -163,12 +163,23 @@ h1 {
   justify-content: space-between;
   align-items: center;
   gap: 8px;
-  font-size: 12.5px;
-  margin: 2px 0 10px;
-  color: var(--fog);
+  font-size: 14px;
+  margin: 2px 0 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid transparent;
 }
 
-.schedule-line.on-track span { color: var(--moss); font-weight: 600; }
+.schedule-line.on-track {
+  background: rgba(127, 184, 154, 0.14);
+  border-color: rgba(127, 184, 154, 0.45);
+}
+.schedule-line.on-track span { color: var(--moss); font-weight: 700; }
+
+.schedule-line.behind {
+  background: rgba(240, 102, 102, 0.14);
+  border-color: rgba(240, 102, 102, 0.55);
+}
 .schedule-line.behind span { color: #F06666; font-weight: 700; }
 
 .schedule-jump {
