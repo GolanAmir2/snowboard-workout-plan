@@ -169,7 +169,7 @@ h1 {
 }
 
 .schedule-line.on-track span { color: var(--moss); font-weight: 600; }
-.schedule-line.behind span { color: var(--alpenglow); font-weight: 600; }
+.schedule-line.behind span { color: #F06666; font-weight: 700; }
 
 .schedule-jump {
   background: transparent;
