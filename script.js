@@ -1,5 +1,6 @@
 const STORAGE_KEY = "summit-prep-state-v1";
 const TRIP_DEFAULT = "2027-02-02";
+const APP_VERSION = "v1.4";
 
 function todayStr() {
   const d = new Date();
@@ -319,6 +320,7 @@ function render() {
   renderDayTabs();
   renderWorkout();
   renderPhaseNote();
+  el("versionLine").textContent = APP_VERSION;
 }
 
 // ---------- Full plan sheet ----------

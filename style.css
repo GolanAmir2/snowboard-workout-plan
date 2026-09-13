@@ -182,6 +182,13 @@ h1 {
   white-space: nowrap;
 }
 
+.version {
+  margin-top: 12px;
+  font-size: 11.5px;
+  color: var(--fog);
+  opacity: 0.6;
+}
+
 .track {
   position: relative;
   height: 6px;
